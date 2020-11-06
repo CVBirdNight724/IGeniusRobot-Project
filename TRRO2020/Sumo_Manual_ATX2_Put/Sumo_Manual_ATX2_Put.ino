@@ -21,9 +21,9 @@
 #define BL_MAX          100
 #define BR_MAX          100
 #define FL_REVERSE      true
-#define FR_REVERSE      false
+#define FR_REVERSE      true
 #define BL_REVERSE      false
-#define BR_REVERSE      true
+#define BR_REVERSE      false
 #define PSS_LX_MIN      0
 #define PSS_LY_MIN      0
 #define PSS_RX_MIN      0
@@ -187,7 +187,7 @@ void readPS2X(){
   else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
     Serial.println("South East");
   }
-  else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
+    else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
     Serial.println("South");
   }
   else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
@@ -208,7 +208,7 @@ void setup() {
 }
 
 void loop() {
-  testMotor();
-//  readPS2X();
-//  delay(50);
+//  testMotor();
+  readPS2X();
+  delay(50);
 }
