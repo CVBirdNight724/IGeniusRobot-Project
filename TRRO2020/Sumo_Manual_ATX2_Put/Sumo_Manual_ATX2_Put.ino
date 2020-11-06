@@ -12,6 +12,10 @@
 
 #define BASE_SPEED_L    70
 #define BASE_SPEED_R    70
+#define MIN_SPEED_L     0
+#define MIN_SPEED_R     0
+#define MAX_SPEED_L     100
+#define MAX_SPEED_R     100
 #define FL_MIN          0
 #define FR_MIN          0
 #define BL_MIN          0
@@ -87,6 +91,10 @@ void testMotor(){
 
 void driveSumo(int L_SPEED, int R_SPEED){
   driveMotor(L_SPEED, R_SPEED, L_SPEED, R_SPEED);
+}
+
+void readDistanc(){
+  
 }
 
 void connectPS2(){
@@ -207,7 +215,7 @@ void readPS2X(){
   }
   else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
 //    Serial.println("South West");
-    driveSumo(MIN_BASE_SPEED_L, -BASE_SPEED_R);
+    driveSumo(MIN_SPEED_L, -BASE_SPEED_R);
   }
   else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
 //    Serial.println("West");
