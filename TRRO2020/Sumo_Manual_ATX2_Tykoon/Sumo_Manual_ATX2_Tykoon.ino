@@ -12,6 +12,10 @@
 
 #define BASE_SPEED_L    70
 #define BASE_SPEED_R    70
+#define MIN_SPEED_L     0
+#define MIN_SPEED_R     0
+#define MAX_SPEED_L     100
+#define MAX_SPEED_R     100
 #define FL_MIN          0
 #define FR_MIN          0
 #define BL_MIN          0
@@ -131,37 +135,46 @@ void readPS2X(){
     PSS_RY_VALUE = PSS_RY_MAX - PSS_RY_VALUE;
   }
   if(ps2x.Button(PSB_PAD_UP)){
-    Serial.println("Up");
+//    Serial.println("Up");
+    driveSumo(MAX_SPEED_L, MAX_SPEED_R);
   } 
   else if(ps2x.Button(PSB_PAD_DOWN)){
-    Serial.println("Down");
+//    Serial.println("Down");
+    driveSumo(-BASE_SPEED_L, -BASE_SPEED_R);
   } 
   else if(ps2x.Button(PSB_PAD_LEFT)){
-    Serial.println("Left");
+//    Serial.println("Left");
+    driveSumo(-BASE_SPEED_L, BASE_SPEED_R);
   } 
   else if (ps2x.Button(PSB_PAD_RIGHT)){
-    Serial.println("Right");
+//    Serial.println("Right");
+    driveSumo(BASE_SPEED_L, -BASE_SPEED_R);
   } 
   else if (ps2x.Button(PSB_L1)){
-    Serial.println("L1");
+//    Serial.println("L1");
+//    driveSumo(BASE_SPEED_L, MAX_SPEED_R);
   }
   else if (ps2x.Button(PSB_L2)){
-     Serial.println("L2");
+//     Serial.println("L2");
+    driveSumo(MAX_SPEED_L, BASE_SPEED_R);
   }
   else if (ps2x.Button(PSB_R1)){
-    Serial.println("R1");
+//    Serial.println("R1");
   }
   else if (ps2x.Button(PSB_R2)){
-    Serial.println("R2");  
+//    Serial.println("R2");  
   }
   else if (ps2x.Button(PSB_CROSS)){
-    Serial.println("Cross");
+//    Serial.println("Cross");
+    driveSumo(MIN_SPEED_L, MIN_SPEED_R);
   } 
   else if (ps2x.Button(PSB_CIRCLE)){
-    Serial.println("Circle");
+//    Serial.println("Circle");
+    driveSumo(BASE_SPEED_L, MIN_SPEED_R);
   }  
   else if (ps2x.ButtonPressed(PSB_SQUARE)){
-    Serial.println("Square");
+//    Serial.println("Square");
+    driveSumo(MIN_SPEED_L, BASE_SPEED_R);
   } 
   else if (ps2x.Button(PSB_TRIANGLE)){
     Serial.println("Triangle");
@@ -173,33 +186,43 @@ void readPS2X(){
     Serial.println("Select");
   }
   else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
-    Serial.println("Stop");
+//    Serial.println("Stop");
+    driveSumo(MIN_SPEED_L, MIN_SPEED_R);
   }
   else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
-    Serial.println("North");
+//    Serial.println("North");
+    driveSumo(MAX_SPEED_L, MAX_SPEED_R);
   }
   else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
-    Serial.println("North East");
+//    Serial.println("North East");
+    driveSumo(BASE_SPEED_L, MIN_SPEED_R);
   }
   else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
-    Serial.println("East");
+//    Serial.println("East");
+    driveSumo(BASE_SPEED_L, -BASE_SPEED_R);
   }
   else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
-    Serial.println("South East");
+//    Serial.println("South East");
+    driveSumo(-BASE_SPEED_L, MIN_SPEED_R);
   }
-  else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
-    Serial.println("South");
+    else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
+//    Serial.println("South");
+    driveSumo(-BASE_SPEED_L, -BASE_SPEED_R);
   }
   else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
-    Serial.println("South West");
+//    Serial.println("South West");
+    driveSumo(MIN_SPEED_L, -BASE_SPEED_R);
   }
   else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
-    Serial.println("West");
+//    Serial.println("West");
+    driveSumo(-BASE_SPEED_L, BASE_SPEED_R);
   }
   else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
-    Serial.println("North West");
+//    Serial.println("North West");
+    driveSumo(MIN_SPEED_L, BASE_SPEED_R);
   }
 }
+
 
 
 void setup() {
