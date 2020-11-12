@@ -1,100 +1,86 @@
-  #include "ATX2.h"
+#include "ATX2.h"
 #include "PS2X_lib.h"
 
-#define FL_CHANNEL      1
-#define FR_CHANNEL      2
-#define BL_CHANNEL      4
-#define BR_CHANNEL      3 
-#define PS2_DAT         24    
-#define PS2_CMD         25 
-#define PS2_CS          26 
-#define PS2_CLK         27
+#define MOTOR_L_CHANNEL       1  
+#define MOTOR_R_CHANNEL       2 
+#define SERVO_HAND_CHANNEL    1
+#define SERVO_ARM_CHANNEL     2
+#define SERVO_BRACKET_CHANNEL 3
+#define PS2_DAT               24    
+#define PS2_CMD               25 
+#define PS2_CS                26 
+#define PS2_CLK               27
 
-#define BASE_SPEED_L    70
-#define BASE_SPEED_R    70
-#define MIN_SPEED_L     0
-#define MIN_SPEED_R     0
-#define MAX_SPEED_L     100
-#define MAX_SPEED_R     100
-#define FL_MIN          0
-#define FR_MIN          0
-#define BL_MIN          0
-#define BR_MIN          0
-#define FL_MAX          100
-#define FR_MAX          100
-#define BL_MAX          100
-#define BR_MAX          100
-#define FL_REVERSE      true
-#define FR_REVERSE      true
-#define BL_REVERSE      false
-#define BR_REVERSE      false
-#define PSS_LX_MIN      0
-#define PSS_LY_MIN      0
-#define PSS_RX_MIN      0
-#define PSS_RY_MIN      0
-#define PSS_LX_MAX      255
-#define PSS_LY_MAX      255
-#define PSS_RX_MAX      255
-#define PSS_RY_MAX      255
-#define PSS_LX_MEAN     127
-#define PSS_LY_MEAN     127
-#define PSS_RX_MEAN     127
-#define PSS_RY_MEAN     127
+#define BASE_SPEED_L          50
+#define BASE_SPEED_R          50
+#define MIN_SPEED_L           0
+#define MIN_SPEED_R           0
+#define MAX_SPEED_L           100
+#define MAX_SPEED_R           100
+#define MOTOR_L_REVERSE       true
+#define MOTOR_R_REVERSE       false
+#define SERVO_HAND_OPEN_VALUE       70
+#define SERVO_HAND_CLOSE_VALUE      100
+#define SERVO_ARM_DOWN_VALUE        30
+#define SERVO_ARM_UP_VALUE          180
+#define SERVO_BRACKET_OPEN_VALUE    90
+#define SERVO_BRACKET_CLOSE_VALUE   180
+#define PSS_LX_MIN            0
+#define PSS_LY_MIN            0
+#define PSS_RX_MIN            0
+#define PSS_RY_MIN            0
+#define PSS_LX_MAX            255
+#define PSS_LY_MAX            255
+#define PSS_RX_MAX            255
+#define PSS_RY_MAX            255
+#define PSS_LX_MEAN           127
+#define PSS_LY_MEAN           127
+#define PSS_RX_MEAN           127
+#define PSS_RY_MEAN           127
 #define PSS_LX_THRESHOLD    20
 #define PSS_LY_THRESHOLD    20
 #define PSS_RX_THRESHOLD    20
 #define PSS_RY_THRESHOLD    20
-#define PSS_LX_REVERSE  false
-#define PSS_LY_REVERSE  true
-#define PSS_RX_REVERSE  false
-#define PSS_RY_REVERSE  true
+#define PSS_LX_REVERSE      false
+#define PSS_LY_REVERSE      true
+#define PSS_RX_REVERSE      false
+#define PSS_RY_REVERSE      true
 
 PS2X ps2x;
 
-void driveMotor(int FL, int FR, int BL, int BR){
-  if(FL_REVERSE){
-    FL *= -1;
+void driveMotor(int L_VALUE, int R_VALUE){
+  if(MOTOR_L_REVERSE){
+    L_VALUE *= -1;
   }
-  if(FR_REVERSE){
-    FR *= -1;
+  if(MOTOR_R_REVERSE){
+    R_VALUE *= -1;
   }
-  if(BL_REVERSE){
-    BL *= -1;
-  }
-  if(BR_REVERSE){
-    BR *= -1;
-  }
-  motor(FL_CHANNEL, FL);
-  motor(FR_CHANNEL, FR);
-  motor(BL_CHANNEL, BL);
-  motor(BR_CHANNEL, BR);
+  motor(MOTOR_L_CHANNEL, L_VALUE);
+  motor(MOTOR_R_CHANNEL, R_VALUE);
 }
 
 void testMotor(){
-  driveMotor(FL_MAX, FR_MIN, BL_MIN, BR_MIN);
+  driveMotor(MAX_SPEED_L, MIN_SPEED_R);
   delay(500);
-  driveMotor(-FL_MAX, FR_MIN, BL_MIN, BR_MIN);
+  driveMotor(-MAX_SPEED_L, MIN_SPEED_R);
   delay(500);
-  driveMotor(FL_MIN, FR_MAX, BL_MIN, BR_MIN);
+  driveMotor(MIN_SPEED_L, MAX_SPEED_R);
   delay(500);
-  driveMotor(FL_MIN, -FR_MAX, BL_MIN, BR_MIN);
-  delay(500);
-  driveMotor(FL_MIN, FR_MIN, BL_MAX, BR_MIN);
-  delay(500);
-  driveMotor(FL_MIN, FR_MIN, -BL_MAX, BR_MIN);
-  delay(500);
-  driveMotor(FL_MIN, FR_MIN, BL_MIN, BR_MAX);
-  delay(500);
-  driveMotor(FL_MIN, FR_MIN, BL_MIN, -BR_MAX);
+  driveMotor(MIN_SPEED_L, -MAX_SPEED_R);
   delay(500);
 }
 
-void driveSumo(int L_SPEED, int R_SPEED){
-  driveMotor(L_SPEED, R_SPEED, L_SPEED, R_SPEED);
+void controlServo(int SERVO_HAND_VALUE, int SERVO_ARM_VALUE, int SERVO_BRACKET_VALUE){
+  servo(SERVO_HAND_CHANNEL, SERVO_HAND_VALUE);
+  servo(SERVO_ARM_CHANNEL, SERVO_ARM_VALUE);
+  servo(SERVO_BRACKET_CHANNEL, SERVO_BRACKET_VALUE);
 }
 
-void readDistanc(){
-  
+void testServo(){
+  servo(SERVO_HAND_CHANNEL, SERVO_HAND_OPEN_VALUE);
+  delay(300);
+  servo(SERVO_HAND_CHANNEL, SERVO_HAND_CLOSE_VALUE);
+  delay(2000);
 }
 
 void connectPS2(){
@@ -140,27 +126,27 @@ void readPS2X(){
   }
   if(ps2x.Button(PSB_PAD_UP)){
 //    Serial.println("Up");
-    driveSumo(MAX_SPEED_L, MAX_SPEED_R);
+    driveMotor(MAX_SPEED_L, MAX_SPEED_R);
   } 
   else if(ps2x.Button(PSB_PAD_DOWN)){
 //    Serial.println("Down");
-    driveSumo(-BASE_SPEED_L, -BASE_SPEED_R);
+    driveMotor(-BASE_SPEED_L, -BASE_SPEED_R);
   } 
   else if(ps2x.Button(PSB_PAD_LEFT)){
 //    Serial.println("Left");
-    driveSumo(-BASE_SPEED_L, BASE_SPEED_R);
+    driveMotor(-BASE_SPEED_L, BASE_SPEED_R);
   } 
   else if (ps2x.Button(PSB_PAD_RIGHT)){
 //    Serial.println("Right");
-    driveSumo(BASE_SPEED_L, -BASE_SPEED_R);
+    driveMotor(BASE_SPEED_L, -BASE_SPEED_R);
   } 
   else if (ps2x.Button(PSB_L1)){
 //    Serial.println("L1");
-//    driveSumo(BASE_SPEED_L, MAX_SPEED_R);
+//    driveMotor(BASE_SPEED_L, MAX_SPEED_R);
   }
   else if (ps2x.Button(PSB_L2)){
 //     Serial.println("L2");
-    driveSumo(MAX_SPEED_L, BASE_SPEED_R);
+    driveMotor(MAX_SPEED_L, BASE_SPEED_R);
   }
   else if (ps2x.Button(PSB_R1)){
 //    Serial.println("R1");
@@ -170,15 +156,15 @@ void readPS2X(){
   }
   else if (ps2x.Button(PSB_CROSS)){
 //    Serial.println("Cross");
-    driveSumo(MIN_SPEED_L, MIN_SPEED_R);
+    driveMotor(MIN_SPEED_L, MIN_SPEED_R);
   } 
   else if (ps2x.Button(PSB_CIRCLE)){
 //    Serial.println("Circle");
-    driveSumo(BASE_SPEED_L, MIN_SPEED_R);
+    driveMotor(BASE_SPEED_L, MIN_SPEED_R);
   }  
   else if (ps2x.ButtonPressed(PSB_SQUARE)){
 //    Serial.println("Square");
-    driveSumo(MIN_SPEED_L, BASE_SPEED_R);
+    driveMotor(MIN_SPEED_L, BASE_SPEED_R);
   } 
   else if (ps2x.Button(PSB_TRIANGLE)){
     Serial.println("Triangle");
@@ -191,50 +177,51 @@ void readPS2X(){
   }
   else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
 //    Serial.println("Stop");
-    driveSumo(MIN_SPEED_L, MIN_SPEED_R);
+    driveMotor(MIN_SPEED_L, MIN_SPEED_R);
   }
   else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
 //    Serial.println("North");
-    driveSumo(MAX_SPEED_L, MAX_SPEED_R);
+    driveMotor(MAX_SPEED_L, MAX_SPEED_R);
   }
   else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
 //    Serial.println("North East");
-    driveSumo(BASE_SPEED_L, MIN_SPEED_R);
+    driveMotor(BASE_SPEED_L, MIN_SPEED_R);
   }
   else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
 //    Serial.println("East");
-    driveSumo(BASE_SPEED_L, -BASE_SPEED_R);
+    driveMotor(BASE_SPEED_L, -BASE_SPEED_R);
   }
   else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
 //    Serial.println("South East");
-    driveSumo(-BASE_SPEED_L, MIN_SPEED_R);
+    driveMotor(-BASE_SPEED_L, MIN_SPEED_R);
   }
     else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
 //    Serial.println("South");
-    driveSumo(-BASE_SPEED_L, -BASE_SPEED_R);
+    driveMotor(-BASE_SPEED_L, -BASE_SPEED_R);
   }
   else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
 //    Serial.println("South West");
-    driveSumo(MIN_SPEED_L, -BASE_SPEED_R);
+    driveMotor(MIN_SPEED_L, -BASE_SPEED_R);
   }
   else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
 //    Serial.println("West");
-    driveSumo(-BASE_SPEED_L, BASE_SPEED_R);
+    driveMotor(-BASE_SPEED_L, BASE_SPEED_R);
   }
   else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
 //    Serial.println("North West");
-    driveSumo(MIN_SPEED_L, BASE_SPEED_R);
+    driveMotor(MIN_SPEED_L, BASE_SPEED_R);
   }
 }
-
-
 void setup() {
   Serial.begin(115200);
-  connectPS2();
+//  connectPS2();
 }
 
 void loop() {
-//  testMotor();
-  readPS2X();
-  delay(50);
+//  readPS2X();
+//  delay(100);
+  servo(SERVO_ARM_CHANNEL, SERVO_ARM_DOWN_VALUE);
+  delay(700);
+  servo(SERVO_ARM_CHANNEL, SERVO_ARM_UP_VALUE);
+  delay(2000);
 }
