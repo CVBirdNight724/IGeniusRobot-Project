@@ -102,13 +102,13 @@ void controlServo(int SERVO_HAND_VALUE, int SERVO_ARM_VALUE, int SERVO_BRACKET_V
     servo(SERVO_ARM_CHANNEL, SERVO_ARM_DOWN_VALUE);
     delay(1500); 
   }
-  else if(STATE == 5){
+  else if(STATE == SERVO_BRACKET_OPEN_STATE){
     servo(SERVO_BRACKET_CHANNEL, SERVO_BRACKET_OPEN_VALUE);
-    delay(1000);
+    delay(1500);
   }
-  else if(STATE == 6){
+  else if(STATE == SERVO_BRACKET_CLOSE_STATE){
     servo(SERVO_BRACKET_CHANNEL, SERVO_BRACKET_CLOSE_VALUE);
-    delay(1000);
+    delay(1500);
   }
 }
 

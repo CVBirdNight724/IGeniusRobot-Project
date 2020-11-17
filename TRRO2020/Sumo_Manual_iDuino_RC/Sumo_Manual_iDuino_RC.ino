@@ -5,7 +5,7 @@
 #define MOTOR_R_B_CHANNEL     7
 #define MOTOR_R_PWM_CHANNEL   6
 
-#define MOTOR_L_INVERSE   false    
+#define MOTOR_L_INVERSE   true 
 #define MOTOR_R_INVERSE   false
 #define MOTOR_L_MIN_SPEED   0
 #define MOTOR_R_MIN_SPEED   0
@@ -80,10 +80,10 @@ void driveMotor(int PWM_L_VALUE, int PWM_R_VALUE){
   PWM_L_VALUE = map(PWM_L_VALUE, MOTOR_PWM_MIN, MOTOR_PWM_MAX, MOTOR_ANALOG_MIN, MOTOR_ANALOG_MAX);
   PWM_R_VALUE = map(PWM_R_VALUE, MOTOR_PWM_MIN, MOTOR_PWM_MAX, MOTOR_ANALOG_MIN, MOTOR_ANALOG_MAX);
   if(MOTOR_L_INVERSE){
-    PWM_L_VALUE = !PWM_L_VALUE;
+    PWM_L_VALUE = -PWM_L_VALUE;
   }
   if(MOTOR_R_INVERSE){
-    PWM_R_VALUE = !PWM_R_VALUE;
+    PWM_R_VALUE = -PWM_R_VALUE;
   }
   if(PWM_L_VALUE >= MOTOR_PWM_MAX){
     digitalWrite(MOTOR_L_A_CHANNEL, HIGH);
@@ -135,6 +135,17 @@ void driveMotor(int PWM_L_VALUE, int PWM_R_VALUE){
     digitalWrite(MOTOR_R_B_CHANNEL, HIGH);
     digitalWrite(MOTOR_R_PWM_CHANNEL, LOW); 
   }
+}
+
+void testMotor(){
+  driveMotor(MOTOR_PWM_MAX, MOTOR_PWM_MIN);
+  delay(1000);
+  driveMotor(-MOTOR_PWM_MAX, MOTOR_PWM_MIN);
+  delay(1000);
+  driveMotor(MOTOR_PWM_MIN, MOTOR_PWM_MAX);
+  delay(1000);
+  driveMotor(MOTOR_PWM_MIN, -MOTOR_PWM_MAX);
+  delay(1000);
 }
 
 void controlSumo(){
@@ -227,6 +238,7 @@ void setup() {
 }
 
 void loop() {
+//  testMotor();
   controlSumo();
 //  readRemoteRC();
   delay(100);
