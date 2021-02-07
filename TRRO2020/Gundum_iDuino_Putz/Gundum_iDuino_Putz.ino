@@ -13,10 +13,10 @@
 #define FL_A            A2
 #define FL_B            A3
 
-#define FL_REVERSE      true
+#define FL_REVERSE      false
 #define FR_REVERSE      false
 #define BL_REVERSE      true
-#define BR_REVERSE      false
+#define BR_REVERSE      true
 #define FL_THRESHOLD    20
 #define FR_THRESHOLD    20
 #define BL_THRESHOLD    20
@@ -345,7 +345,7 @@ void setup() {
 void loop() {
   readPS2X();
   delay(50);
-//  testMotor();
+//  testMotor(  );
 //  driveMecanum(0, 100);
 //  delay(1000);
   

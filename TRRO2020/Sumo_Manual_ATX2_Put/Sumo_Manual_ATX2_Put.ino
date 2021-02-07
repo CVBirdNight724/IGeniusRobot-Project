@@ -3,15 +3,15 @@
 
 #define FL_CHANNEL      1
 #define FR_CHANNEL      2
-#define BL_CHANNEL      4
+#define BL_CHANNEL      5
 #define BR_CHANNEL      3 
 #define PS2_DAT         24    
 #define PS2_CMD         25 
 #define PS2_CS          26 
 #define PS2_CLK         27
 
-#define BASE_SPEED_L    70
-#define BASE_SPEED_R    70
+#define BASE_SPEED_L    50
+#define BASE_SPEED_R    50
 #define MIN_SPEED_L     0
 #define MIN_SPEED_R     0
 #define MAX_SPEED_L     100
@@ -140,7 +140,7 @@ void readPS2X(){
   }
   if(ps2x.Button(PSB_PAD_UP)){
 //    Serial.println("Up");
-    driveSumo(MAX_SPEED_L, MAX_SPEED_R);
+    driveSumo(BASE_SPEED_L, BASE_SPEED_R);
   } 
   else if(ps2x.Button(PSB_PAD_DOWN)){
 //    Serial.println("Down");
@@ -156,21 +156,22 @@ void readPS2X(){
   } 
   else if (ps2x.Button(PSB_L1)){
 //    Serial.println("L1");
-//    driveSumo(BASE_SPEED_L, MAX_SPEED_R);
+    driveSumo(MIN_SPEED_L, MAX_SPEED_R);
   }
   else if (ps2x.Button(PSB_L2)){
 //     Serial.println("L2");
-    driveSumo(MAX_SPEED_L, BASE_SPEED_R);
+//    driveSumo(MAX_SPEED_L, BASE_SPEED_R);
   }
   else if (ps2x.Button(PSB_R1)){
 //    Serial.println("R1");
+    driveSumo(MAX_SPEED_L, MIN_SPEED_R);
   }
   else if (ps2x.Button(PSB_R2)){
 //    Serial.println("R2");  
   }
   else if (ps2x.Button(PSB_CROSS)){
 //    Serial.println("Cross");
-    driveSumo(MIN_SPEED_L, MIN_SPEED_R);
+    driveSumo(MAX_SPEED_L, MAX_SPEED_R);
   } 
   else if (ps2x.Button(PSB_CIRCLE)){
 //    Serial.println("Circle");
@@ -195,7 +196,7 @@ void readPS2X(){
   }
   else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
 //    Serial.println("North");
-    driveSumo(MAX_SPEED_L, MAX_SPEED_R);
+    driveSumo(BASE_SPEED_L, BASE_SPEED_R);
   }
   else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
 //    Serial.println("North East");
@@ -227,14 +228,14 @@ void readPS2X(){
   }
 }
 
-
 void setup() {
+  XIO();
   Serial.begin(115200);
   connectPS2();
 }
 
 void loop() {
 //  testMotor();
-  readPS2X();
+  readPS2X()    ;
   delay(50);
 }

@@ -17,16 +17,16 @@
 #define MIN_SPEED_R           0
 #define MAX_SPEED_L           100
 #define MAX_SPEED_R           100
-#define MOTOR_L_REVERSE       false
+#define MOTOR_L_REVERSE       true
 #define MOTOR_R_REVERSE       false
 #define SERVO_MIN_VALUE       0
 #define SERVO_MAX_VALUE       180
 #define SERVO_HAND_OPEN_VALUE       70
 #define SERVO_HAND_CLOSE_VALUE      100
-#define SERVO_ARM_DOWN_VALUE        40
+#define SERVO_ARM_DOWN_VALUE        30
 #define SERVO_ARM_UP_VALUE          180
-#define SERVO_BRACKET_OPEN_VALUE    180
-#define SERVO_BRACKET_CLOSE_VALUE   90
+#define SERVO_BRACKET_OPEN_VALUE    90
+#define SERVO_BRACKET_CLOSE_VALUE   30
 #define SERVO_HAND_OPEN_STATE       1
 #define SERVO_HAND_CLOSE_STATE      2
 #define SERVO_ARM_UP_STATE          3
@@ -59,6 +59,7 @@ bool SERVO_ARM_STATE = true;
 bool SERVO_BRACKET_STATE = true;
 int SERVO_HAND_MANUAL = 0;
 int SERVO_ARM_MANUAL = 0;
+
 PS2X ps2x;
 
 void driveMotor(int L_VALUE, int R_VALUE){
@@ -201,23 +202,17 @@ void readPS2X(){
   } 
   else if (ps2x.Button(PSB_L1)){
 //    Serial.println("L1");
-    SERVO_HAND_MANUAL += 2;
-    controlServo(SERVO_HAND_MANUAL, SERVO_ARM_MANUAL, SERVO_BRACKET_CLOSE_VALUE);
+//    driveMotor(BASE_SPEED_L, MAX_SPEED_R);
   }
   else if (ps2x.Button(PSB_L2)){
 //     Serial.println("L2");
-    SERVO_ARM_MANUAL += 2;
-    controlServo(SERVO_HAND_MANUAL, SERVO_ARM_MANUAL, SERVO_BRACKET_CLOSE_VALUE);
+    driveMotor(MAX_SPEED_L, BASE_SPEED_R);
   }
   else if (ps2x.Button(PSB_R1)){
 //    Serial.println("R1");
-    SERVO_HAND_MANUAL -= 2;
-    controlServo(SERVO_HAND_MANUAL, SERVO_ARM_MANUAL, SERVO_BRACKET_CLOSE_VALUE);
   }
   else if (ps2x.Button(PSB_R2)){
-//    Serial.println("R2"); 
-    SERVO_ARM_MANUAL -= 2;
-    controlServo(SERVO_HAND_MANUAL, SERVO_ARM_MANUAL, SERVO_BRACKET_CLOSE_VALUE); 
+//    Serial.println("R2");  
   }
   else if (ps2x.Button(PSB_CROSS)){
 //    Serial.println("Square");
@@ -254,7 +249,6 @@ void readPS2X(){
   } 
   else if (ps2x.Button(PSB_TRIANGLE)){
 //    Serial.println("Triangle");
-    driveMotor(MAX_SPEED_L, MAX_SPEED_R);
   } 
   else if (ps2x.ButtonPressed(PSB_START)){
     Serial.println("Start");

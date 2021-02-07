@@ -13,10 +13,10 @@
 #define FL_A            A2
 #define FL_B            A3
 
-#define FL_REVERSE      false
+#define FL_REVERSE      true
 #define FR_REVERSE      false
 #define BL_REVERSE      true
-#define BR_REVERSE      true
+#define BR_REVERSE      false
 #define FL_THRESHOLD    20
 #define FR_THRESHOLD    20
 #define BL_THRESHOLD    20
@@ -221,14 +221,14 @@ void connectPS2(){
 
 void readPS2X(){
   ps2x.read_gamepad(false, false);
-//  Serial.print("LX : ");
-//  Serial.print(ps2x.Analog(PSS_LX));
-//  Serial.print(", LY: ");
-//  Serial.print(ps2x.Analog(PSS_LY));
-//  Serial.print(", RX : ");
-//  Serial.print(ps2x.Analog(PSS_RX));
-//  Serial.print(", RY: ");
-//  Serial.println(ps2x.Analog(PSS_RY));
+  Serial.print("LX : ");
+  Serial.print(ps2x.Analog(PSS_LX));
+  Serial.print(", LY: ");
+  Serial.print(ps2x.Analog(PSS_LY));
+  Serial.print(", RX : ");
+  Serial.print(ps2x.Analog(PSS_RX));
+  Serial.print(", RY: ");
+  Serial.println(ps2x.Analog(PSS_RY));
   int PSS_LX_VALUE = ps2x.Analog(PSS_LX);
   int PSS_LY_VALUE = ps2x.Analog(PSS_LY);
   int PSS_RX_VALUE = ps2x.Analog(PSS_RX);
@@ -298,42 +298,78 @@ void readPS2X(){
   else if(ps2x.ButtonPressed(PSB_SELECT)){
     Serial.println("Select");
   }
-  else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
+  else if(abs(PSS_RX_VALUE-PSS_RX_MEAN) < PSS_RX_THRESHOLD && abs(PSS_RY_VALUE-PSS_RY_MEAN) < PSS_RY_THRESHOLD){
     Serial.println("Stop");
     driveMecanum(DRIVE_X_MIN, DRIVE_Y_MIN );  
   }
-  else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
+  else if(abs(PSS_RX_VALUE-PSS_RX_MEAN) < PSS_RX_THRESHOLD && PSS_RY_VALUE > PSS_RY_MEAN+PSS_RY_THRESHOLD){
     Serial.println("North");
     driveMecanum(DRIVE_X_MIN, DRIVE_Y_MAX);
   }
-  else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
+  else if(PSS_RX_VALUE > PSS_RX_MEAN+PSS_RX_THRESHOLD && PSS_RY_VALUE > PSS_RY_MEAN+PSS_RY_THRESHOLD){
     Serial.println("North East");
     driveMecanum(DRIVE_X_MAX, DRIVE_Y_MAX); 
   }
-  else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
+  else if(PSS_RX_VALUE > PSS_RX_MEAN+PSS_RX_THRESHOLD && abs(PSS_RY_VALUE-PSS_RY_MEAN) < PSS_RY_THRESHOLD){
     Serial.println("East");
     driveMecanum(DRIVE_X_MAX, DRIVE_Y_MIN);
   }
-  else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
+  else if(PSS_RX_VALUE > PSS_RX_MEAN+PSS_RX_THRESHOLD && PSS_RY_VALUE < PSS_RY_MEAN-PSS_RY_THRESHOLD){
     Serial.println("South East");
     driveMecanum(DRIVE_X_MAX, -DRIVE_Y_MAX);
   }
-  else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
+  else if(abs(PSS_RX_VALUE-PSS_RX_MEAN) < PSS_RX_THRESHOLD && PSS_RY_VALUE < PSS_RY_MEAN-PSS_RY_THRESHOLD){
     Serial.println("South");
     driveMecanum(DRIVE_X_MIN, -DRIVE_Y_MAX);
   }
-  else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
+  else if(PSS_RX_VALUE < PSS_RX_MEAN-PSS_RX_THRESHOLD && PSS_RY_VALUE < PSS_RY_MEAN-PSS_RY_THRESHOLD){
     Serial.println("South West");
     driveMecanum(-DRIVE_X_MAX, -DRIVE_Y_MAX);
   }
-  else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
+  else if(PSS_RX_VALUE < PSS_RX_MEAN-PSS_RX_THRESHOLD && abs(PSS_RY_VALUE-PSS_RY_MEAN) < PSS_RY_THRESHOLD){
     Serial.println("West");
     driveMecanum(-DRIVE_X_MAX, DRIVE_Y_MIN);
   }
-  else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
+  else if(PSS_RX_VALUE < PSS_RX_MEAN-PSS_RX_THRESHOLD && PSS_RY_VALUE > PSS_RY_MEAN+PSS_RY_THRESHOLD){
     Serial.println("North West");
     driveMecanum(-DRIVE_X_MAX, DRIVE_Y_MAX);
   }
+//  else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
+//    Serial.println("Stop");
+//    driveMecanum(DRIVE_X_MIN, DRIVE_Y_MIN );  
+//  }
+//  else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
+//    Serial.println("North");
+//    driveMecanum(DRIVE_X_MIN, DRIVE_Y_MAX);
+//  }
+//  else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
+//    Serial.println("North East");
+//    driveMecanum(DRIVE_X_MAX, DRIVE_Y_MAX); 
+//  }
+//  else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
+//    Serial.println("East");
+//    driveMecanum(DRIVE_X_MAX, DRIVE_Y_MIN);
+//  }
+//  else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
+//    Serial.println("South East");
+//    driveMecanum(DRIVE_X_MAX, -DRIVE_Y_MAX);
+//  }
+//  else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
+//    Serial.println("South");
+//    driveMecanum(DRIVE_X_MIN, -DRIVE_Y_MAX);
+//  }
+//  else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && PSS_LY_VALUE < PSS_LY_MEAN-PSS_LY_THRESHOLD){
+//    Serial.println("South West");
+//    driveMecanum(-DRIVE_X_MAX, -DRIVE_Y_MAX);
+//  }
+//  else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && abs(PSS_LY_VALUE-PSS_LY_MEAN) < PSS_LY_THRESHOLD){
+//    Serial.println("West");
+//    driveMecanum(-DRIVE_X_MAX, DRIVE_Y_MIN);
+//  }
+//  else if(PSS_LX_VALUE < PSS_LX_MEAN-PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
+//    Serial.println("North West");
+//    driveMecanum(-DRIVE_X_MAX, DRIVE_Y_MAX);
+//  }
 }
 
 void setup() {

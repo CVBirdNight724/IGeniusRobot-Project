@@ -10,8 +10,8 @@
 #define PS2_CS          26 
 #define PS2_CLK         27
 
-#define BASE_SPEED_L    70
-#define BASE_SPEED_R    70
+#define BASE_SPEED_L    50
+#define BASE_SPEED_R    50
 #define MIN_SPEED_L     0
 #define MIN_SPEED_R     0
 #define MAX_SPEED_L     100
@@ -25,9 +25,9 @@
 #define BL_MAX          100
 #define BR_MAX          100
 #define FL_REVERSE      true
-#define FR_REVERSE      false
+#define FR_REVERSE      true
 #define BL_REVERSE      false
-#define BR_REVERSE      true
+#define BR_REVERSE      false
 #define PSS_LX_MIN      0
 #define PSS_LY_MIN      0
 #define PSS_RX_MIN      0
@@ -90,7 +90,7 @@ void testMotor(){
 }
 
 void driveSumo(int L_SPEED, int R_SPEED){
-  driveMotor(L_SPEED, R_SPEED, L_SPEED, R_SPEED);
+  driveMotor(L_SPEED, L_SPEED, R_SPEED, R_SPEED);
 }
 
 void connectPS2(){
@@ -136,7 +136,7 @@ void readPS2X(){
   }
   if(ps2x.Button(PSB_PAD_UP)){
 //    Serial.println("Up");
-    driveSumo(MAX_SPEED_L, MAX_SPEED_R);
+    driveSumo(BASE_SPEED_L, BASE_SPEED_R);
   } 
   else if(ps2x.Button(PSB_PAD_DOWN)){
 //    Serial.println("Down");
@@ -152,21 +152,22 @@ void readPS2X(){
   } 
   else if (ps2x.Button(PSB_L1)){
 //    Serial.println("L1");
-//    driveSumo(BASE_SPEED_L, MAX_SPEED_R);
+    driveSumo(MIN_SPEED_L, MAX_SPEED_R);
   }
   else if (ps2x.Button(PSB_L2)){
 //     Serial.println("L2");
-    driveSumo(MAX_SPEED_L, BASE_SPEED_R);
+//    driveSumo(MAX_SPEED_L, BASE_SPEED_R);
   }
   else if (ps2x.Button(PSB_R1)){
 //    Serial.println("R1");
+    driveSumo(MAX_SPEED_L, MIN_SPEED_R);
   }
   else if (ps2x.Button(PSB_R2)){
 //    Serial.println("R2");  
   }
   else if (ps2x.Button(PSB_CROSS)){
 //    Serial.println("Cross");
-    driveSumo(MIN_SPEED_L, MIN_SPEED_R);
+    driveSumo(MAX_SPEED_L, MAX_SPEED_R);
   } 
   else if (ps2x.Button(PSB_CIRCLE)){
 //    Serial.println("Circle");
@@ -191,7 +192,7 @@ void readPS2X(){
   }
   else if(abs(PSS_LX_VALUE-PSS_LX_MEAN) < PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
 //    Serial.println("North");
-    driveSumo(MAX_SPEED_L, MAX_SPEED_R);
+    driveSumo(BASE_SPEED_L, BASE_SPEED_R);
   }
   else if(PSS_LX_VALUE > PSS_LX_MEAN+PSS_LX_THRESHOLD && PSS_LY_VALUE > PSS_LY_MEAN+PSS_LY_THRESHOLD){
 //    Serial.println("North East");
@@ -231,7 +232,7 @@ void setup() {
 }
 
 void loop() {
-  testMotor();
-//  readPS2X();
-//  delay(50);
+//  testMotor();
+  readPS2X();
+  delay(100);
 }
